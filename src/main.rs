@@ -14,19 +14,19 @@ fn main() {
     assert!(ace_of_spades > ace_of_hearts);  // Same value, higher suit
     assert!(ace_of_spades > king_of_spades); // Higher value
     assert!(ace_of_hearts == ace_of_hearts); // Same card
+
+
     let mut deck = crate::deck::Deck::new();
     println!("Generated deck with {} cards", deck.cards.len());
 
-    let mut rng = thread_rng();
-    deck.cards.shuffle(&mut rng);
-    // Print first 5 cards
-    for card in deck.cards.iter() {
-        println!("{}", card);
-    }
+    deck.shuffle();
+    
+    
 
     println!("{}",deck.cards.len());
     let c = deck.take_top().unwrap();
     println!("{}",deck.cards.len());
-    println!("{}", c)
+    deck.renew();
+    println!("{}",deck.cards.len());
     
 }
