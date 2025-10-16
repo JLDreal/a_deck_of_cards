@@ -64,7 +64,7 @@
 
           # Set environment variables in the shell
           CARGO_BUILD_TARGET = pkgs.stdenv.targetPlatform.config;
-          CARGO_TARGET = pkgs.stdenv.targetPlatform.config;
+          # CARGO_TARGET = pkgs.stdenv.targetPlatform.config;
         };
       }
     );
