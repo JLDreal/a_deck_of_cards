@@ -31,7 +31,10 @@
                       # Additional darwin specific inputs can be set here
                       pkgs.libiconv
                     ]++[
-                        (craneLib.cargoDepsFromCargoToml ./.)
+                      (craneLib.cargoDeps [
+                                    # Add your dependencies here, e.g.:
+                                    { name = "rand"; version = "0.8"; }
+                                     ])
                       ];
 
           # Explicitly set the target
