@@ -30,12 +30,7 @@
           ] ++ lib.optionals pkgs.stdenv.isDarwin [
                       # Additional darwin specific inputs can be set here
                       pkgs.libiconv
-                    ]++[
-                      (craneLib.cargoDeps [
-                                    # Add your dependencies here, e.g.:
-                                    { name = "rand"; version = "0.8"; }
-                                     ])
-                      ];
+                    ];
 
           # Explicitly set the target
           CARGO_BUILD_TARGET = pkgs.stdenv.hostPlatform.config;
