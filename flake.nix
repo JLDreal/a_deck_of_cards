@@ -5,6 +5,7 @@
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     flake-utils.url = "github:numtide/flake-utils";
     crane.url = "github:ipetkov/crane";
+
   };
 
   outputs = { self, nixpkgs, flake-utils, crane }:
@@ -19,19 +20,18 @@
     flake-utils.lib.eachSystem supportedSystems (system:
       let
         pkgs = nixpkgs.legacyPackages.${system};
-        craneLib = crane.lib.${system};
+        craneLib = crane.mkLib pkgs;
+        src = craneLib.cleanCargoSource ./.;
 
         commonArgs = {
           src = craneLib.cleanCargoSource ./.;
 
           buildInputs = with pkgs; [
             # Your dependencies
-          ] ++ lib.optionals stdenv.isDarwin [
-            darwin.apple_sdk.frameworks.Security
-            darwin.apple_sdk.frameworks.SystemConfiguration
-            darwin.apple_sdk.frameworks.CoreFoundation
-            libiconv
-          ];
+          ] ++ lib.optionals pkgs.stdenv.isDarwin [
+                      # Additional darwin specific inputs can be set here
+                      pkgs.libiconv
+                    ];
 
           # Explicitly set the target
           CARGO_BUILD_TARGET = pkgs.stdenv.hostPlatform.config;
