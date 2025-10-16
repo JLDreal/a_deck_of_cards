@@ -28,6 +28,7 @@
           cargoLock = {
             lockFile = ./Cargo.lock;
           };
+          CARGO_BUILD_TARGET = pkgs.stdenv.hostPlatform.config;
 
           nativeBuildInputs = with pkgs; [
             pkg-config
