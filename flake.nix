@@ -21,7 +21,7 @@
       let
         pkgs = nixpkgs.legacyPackages.${system};
         craneLib = crane.mkLib pkgs;
-        src = craneLib.cleanCargoSource ./.;
+
 
         commonArgs = {
           src = craneLib.cleanCargoSource ./.;
