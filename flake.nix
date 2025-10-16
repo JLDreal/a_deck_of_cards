@@ -1,12 +1,13 @@
 {
-  description = "Rust project with multi-arch support";
+  description = "Rust project with crane and explicit targets";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     flake-utils.url = "github:numtide/flake-utils";
+    crane.url = "github:ipetkov/crane";
   };
 
-  outputs = { self, nixpkgs, flake-utils }:
+  outputs = { self, nixpkgs, flake-utils, crane }:
     let
       supportedSystems = [
         "x86_64-linux"
@@ -18,42 +19,52 @@
     flake-utils.lib.eachSystem supportedSystems (system:
       let
         pkgs = nixpkgs.legacyPackages.${system};
-      in
-      {
-        packages.default = pkgs.rustPlatform.buildRustPackage {
-          pname = "my-rust-project";
-          version = "0.1.0";
-          src = ./.;
+        craneLib = crane.lib.${system};
 
-          cargoLock = {
-            lockFile = ./Cargo.lock;
-          };
-          CARGO_BUILD_TARGET = pkgs.stdenv.hostPlatform.config;
-
-          nativeBuildInputs = with pkgs; [
-            pkg-config
-          ];
+        commonArgs = {
+          src = craneLib.cleanCargoSource ./.;
 
           buildInputs = with pkgs; [
-            # Add your dependencies here
+            # Your dependencies
+          ] ++ lib.optionals stdenv.isDarwin [
+            darwin.apple_sdk.frameworks.Security
+            darwin.apple_sdk.frameworks.SystemConfiguration
+            darwin.apple_sdk.frameworks.CoreFoundation
+            libiconv
           ];
+
+          # Explicitly set the target
+          CARGO_BUILD_TARGET = pkgs.stdenv.hostPlatform.config;
+          CARGO_TARGET = pkgs.stdenv.hostPlatform.config;
         };
 
+        cargoArtifacts = craneLib.buildDepsOnly commonArgs;
+
+        myPackage = craneLib.buildPackage (commonArgs // {
+          inherit cargoArtifacts;
+        });
+
+      in
+      {
+        packages.default = myPackage;
+
         hydraJobs = {
-          package = self.packages.${system}.default;
-          test = self.packages.${system}.default.overrideAttrs (old: {
-            doCheck = true;
+          package = myPackage;
+          test = craneLib.cargoTest (commonArgs // {
+            inherit cargoArtifacts;
           });
         };
 
         devShells.default = pkgs.mkShell {
-          buildInputs = with pkgs; [
+          inputsFrom = [ myPackage ];
+          packages = with pkgs; [
             cargo
             rustc
-            rustfmt
-            clippy
-            pkg-config
+            rust-analyzer
           ];
+
+          # Set environment variables in the shell
+          CARGO_BUILD_TARGET = pkgs.stdenv.hostPlatform.config;
         };
       }
     );
