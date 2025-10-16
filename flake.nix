@@ -8,7 +8,7 @@
 
   };
 
-  outputs = {self, nixpkgs, flake-utils, crane }:
+  outputs = { self, nixpkgs, flake-utils, crane }:
     let
       supportedSystems = [
         "x86_64-linux"
@@ -26,7 +26,6 @@
           src = craneLib.cleanCargoSource ./.;
 
           buildInputs = with pkgs; [
-            qemu
             # Your dependencies
           ] ++ lib.optionals pkgs.stdenv.isDarwin [
                       # Additional darwin specific inputs can be set here
@@ -34,8 +33,8 @@
                     ];
 
           # Explicitly set the target
-          CARGO_BUILD_TARGET = pkgs.stdenv.targetPlatform.config;
-          CARGO_TARGET = pkgs.stdenv.targetPlatform.config;
+          CARGO_BUILD_TARGET = pkgs.stdenv.hostPlatform.config;
+          CARGO_TARGET = pkgs.stdenv.hostPlatform.config;
         };
 
         cargoArtifacts = craneLib.buildDepsOnly commonArgs;
@@ -58,15 +57,13 @@
         devShells.default = pkgs.mkShell {
           inputsFrom = [ myPackage ];
           packages = with pkgs; [
-            qemu
             cargo
             rustc
             rust-analyzer
           ];
 
           # Set environment variables in the shell
-          CARGO_BUILD_TARGET = pkgs.stdenv.targetPlatform.config;
-
+          CARGO_BUILD_TARGET = pkgs.stdenv.hostPlatform.config;
         };
       }
     );
