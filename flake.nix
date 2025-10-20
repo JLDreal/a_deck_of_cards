@@ -19,7 +19,7 @@
 
     flake-utils.lib.eachSystem supportedSystems (system:
       let
-        pkgs = nixpkgs.pkgsCross.${system};
+        pkgs = nixpkgs.legacyPackages.${system};
         craneLib = crane.mkLib pkgs;
 
 
