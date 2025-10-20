@@ -1,10 +1,9 @@
-use crate::deck::{Deck, DeckError};
-use crate::enums::cards::CardValue;
-use crate::enums::suits::Suit;
+use a_deck_of_cards::deck::{Card, Deck, DeckError};
+use a_deck_of_cards::enums::cards::CardValue;
+use a_deck_of_cards::enums::suits::Suit;
 
 #[cfg(test)]
 mod tests {
-    use crate::deck::Card;
 
     use super::*;
 
