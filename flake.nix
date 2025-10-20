@@ -16,6 +16,7 @@
 
       ];
     in
+
     flake-utils.lib.eachSystem supportedSystems (system:
       let
         pkgs = nixpkgs.legacyPackages.${system};
@@ -45,12 +46,14 @@
 
       in
       {
+
         packages.default = myPackage;
 
         hydraJobs = {
           package = myPackage;
           test = craneLib.cargoTest (commonArgs // {
             inherit cargoArtifacts;
+
           });
         };
 
@@ -64,6 +67,7 @@
 
           # Set environment variables in the shell
           CARGO_BUILD_TARGET = pkgs.stdenv.hostPlatform.config;
+
         };
       }
     );
