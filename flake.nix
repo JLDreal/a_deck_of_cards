@@ -63,6 +63,7 @@
             cargo
             rustc
             rust-analyzer
+            rustup
           ];
 
           # Set environment variables in the shell
