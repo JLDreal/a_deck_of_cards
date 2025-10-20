@@ -19,7 +19,7 @@
 
     flake-utils.lib.eachSystem supportedSystems (system:
       let
-        pkgs = nixpkgs.legacyPackages.${system};
+        pkgs = nixpkgs.crossComp.${system};
         craneLib = crane.mkLib pkgs;
 
 
@@ -33,7 +33,9 @@
                       pkgs.libiconv
                     ];
 
-
+          # Explicitly set the target
+          CARGO_BUILD_TARGET = pkgs.stdenv.hostPlatform.config;
+          CARGO_TARGET = pkgs.stdenv.hostPlatform.config;
         };
 
         cargoArtifacts = craneLib.buildDepsOnly commonArgs;
@@ -63,7 +65,9 @@
             rust-analyzer
           ];
 
-
+          # Set environment variables in the shell
+          CARGO_BUILD_TARGET = pkgs.stdenv.hostPlatform.config;
+          CARGO_TARGET = pkgs.stdenv.hostPlatform.config;
 
         };
       }
