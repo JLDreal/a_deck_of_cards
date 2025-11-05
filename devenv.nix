@@ -5,8 +5,13 @@
   env.GREET = "devenv";
 
   # https://devenv.sh/packages/
-  packages = with pkgs;[ git
-    rustup ];
+  packages = with pkgs;[
+    rust-analyzer
+    git
+    wasm-pack
+    wasm-bindgen-cli
+    rustup
+  ];
 
   # https://devenv.sh/languages/
   languages.rust.enable = true;

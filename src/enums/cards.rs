@@ -1,4 +1,6 @@
 use std::fmt;
+use wasm_bindgen::prelude::wasm_bindgen;
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
 pub enum CardValue{
     Two,

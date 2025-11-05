@@ -3,5 +3,17 @@ name = "a_deck_of_cards"
 version = "0.1.0"
 edition = "2024"
 
+[[test]]
+name = "test_deck"
+path = "tests/test_deck.rs"
+
+[lib]
+name = "a_deck_of_cards"
+test = true
+path = "src/lib.rs"
+
+
+
 [dependencies]
 rand = "0.8"
+wasm-bindgen = "0.2"
